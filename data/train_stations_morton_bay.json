@@ -1,0 +1,87 @@
+{
+  "type": "FeatureCollection",
+  "name": "Rail_Stations",
+  "crs": { "type": "name", "properties": { "name": "urn:ogc:def:crs:OGC:1.3:CRS84" } },
+  "features": [
+    {
+      "type": "Feature",
+      "properties": { "OBJECTID": 1, "Name": "DAKABIN RAILWAY STATION", "Status": "MBRC" },
+      "geometry": { "type": "Point", "coordinates": [152.975816542000075, -27.230379648999929, 0.0] }
+    },
+    {
+      "type": "Feature",
+      "properties": { "OBJECTID": 2, "Name": "NARANGBA RAILWAY STATION", "Status": "MBRC" },
+      "geometry": { "type": "Point", "coordinates": [152.959768721000046, -27.202358061999973, 0.0] }
+    },
+    {
+      "type": "Feature",
+      "properties": { "OBJECTID": 3, "Name": "BURPENGARY RAILWAY STATION", "Status": "MBRC" },
+      "geometry": { "type": "Point", "coordinates": [152.957416799000043, -27.162016645999984, 0.0] }
+    },
+    {
+      "type": "Feature",
+      "properties": { "OBJECTID": 4, "Name": "MORAYFIELD RAILWAY STATION", "Status": "MBRC" },
+      "geometry": { "type": "Point", "coordinates": [152.952728695000019, -27.110215493999931, 0.0] }
+    },
+    {
+      "type": "Feature",
+      "properties": { "OBJECTID": 5, "Name": "CABOOLTURE RAILWAY STATION", "Status": "MBRC" },
+      "geometry": { "type": "Point", "coordinates": [152.953535187000057, -27.082917427999973, 0.0] }
+    },
+    {
+      "type": "Feature",
+      "properties": { "OBJECTID": 6, "Name": "ELIMBAH RAILWAY STATION", "Status": "MBRC" },
+      "geometry": { "type": "Point", "coordinates": [152.945734770000058, -27.01092428499993, 0.0] }
+    },
+    {
+      "type": "Feature",
+      "properties": { "OBJECTID": 7, "Name": "PETRIE RAILWAY STATION", "Status": "MBRC" },
+      "geometry": { "type": "Point", "coordinates": [152.981781302000059, -27.268221179999955, 0.0] }
+    },
+    {
+      "type": "Feature",
+      "properties": { "OBJECTID": 8, "Name": "LAWNTON RAILWAY STATION", "Status": "MBRC" },
+      "geometry": { "type": "Point", "coordinates": [152.981076660000099, -27.281734163999943, 0.0] }
+    },
+    {
+      "type": "Feature",
+      "properties": { "OBJECTID": 9, "Name": "BRAY PARK RAILWAY STATION", "Status": "MBRC" },
+      "geometry": { "type": "Point", "coordinates": [152.98627556800011, -27.299563098999954, 0.0] }
+    },
+    {
+      "type": "Feature",
+      "properties": { "OBJECTID": 10, "Name": "STRATHPINE RAILWAY STATION", "Status": "MBRC" },
+      "geometry": { "type": "Point", "coordinates": [152.989548292000109, -27.311014059999934, 0.0] }
+    },
+    {
+      "type": "Feature",
+      "properties": { "OBJECTID": 11, "Name": "KALLANGUR STATION", "Status": "MBRC" },
+      "geometry": { "type": "Point", "coordinates": [153.000432229000012, -27.256484064999938, 0.0] }
+    },
+    {
+      "type": "Feature",
+      "properties": { "OBJECTID": 12, "Name": "MANGO HILL STATION", "Status": "MBRC" },
+      "geometry": { "type": "Point", "coordinates": [153.027628729000071, -27.246333992999951, 0.0] }
+    },
+    {
+      "type": "Feature",
+      "properties": { "OBJECTID": 13, "Name": "MURRUMBA DOWNS STATION", "Status": "MBRC" },
+      "geometry": { "type": "Point", "coordinates": [153.011786098000016, -27.252355836999982, 0.0] }
+    },
+    {
+      "type": "Feature",
+      "properties": { "OBJECTID": 14, "Name": "MANGO HILL EAST STATION", "Status": "MBRC" },
+      "geometry": { "type": "Point", "coordinates": [153.036091396000074, -27.233375548999959, 0.0] }
+    },
+    {
+      "type": "Feature",
+      "properties": { "OBJECTID": 15, "Name": "ROTHWELL STATION", "Status": "MBRC" },
+      "geometry": { "type": "Point", "coordinates": [153.048337110000034, -27.223797778999938, 0.0] }
+    },
+    {
+      "type": "Feature",
+      "properties": { "OBJECTID": 16, "Name": "KIPPA-RING STATION", "Status": "MBRC" },
+      "geometry": { "type": "Point", "coordinates": [153.08219879100011, -27.225329908999981, 0.0] }
+    }
+  ]
+}
