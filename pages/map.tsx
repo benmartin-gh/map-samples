@@ -1,41 +1,114 @@
+import { useEffect, useState, useRef, MutableRefObject, useCallback } from 'react';
+import { Loader } from '@googlemaps/js-api-loader';
 import type { NextPage } from 'next';
 import Map from '../components/Map';
 import DeckMarker from '../components/Marker/DeckMarker';
 import GeoJsonLayer from '../components/GeoJsonLayer';
 import Button from '../components/Button';
-import Marker from '../components/Marker/Marker';
 import { useRouter } from 'next/router';
-import { Feature } from '../types/GeoJSON';
 import data from '../data/sports_facilities.json';
+import { initGoogleMarker } from '../components/Marker/googleMarker';
+import MapContext from '../context/mapContext';
+import Marker from '../components/Marker';
+import { Feature } from '../types/GeoJSON';
 
 const MapPage: NextPage = () => {
   const router = useRouter();
-  const { useVectorMap, useDeckGlIconLayer, useDeckGlGeoJsonLayer, useGoogleMarkers } = router.query;
+  const [map, setMap] = useState<google.maps.Map | null>(null);
+  const mapDivRef = useRef<HTMLDivElement>(null) as MutableRefObject<HTMLDivElement | null>;
+
+  const { useVectorMap, useDeckGlIconLayer, useDeckGlGeoJsonLayer, useGoogleMarkers, useGoogleMarkersOnTileLoaded } =
+    router.query;
+  // useState for googleMarker onTileLoaded
+  const [googleMarkers, setGoogleMarkers] = useState<google.maps.Marker[]>([]);
+
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    if (mapDivRef.current && !map) {
+      const loader = new Loader({
+        apiKey: process.env.NEXT_PUBLIC_GOOGLE_MAP_API_KEY || '',
+        version: 'beta',
+      });
+
+      loader
+        .load()
+        .then((google) => {
+          const m = new google.maps.Map(mapDivRef.current, {
+            rotateControl: true,
+            mapTypeControl: false,
+            disableDefaultUI: true,
+            scaleControl: true,
+            zoomControl: true,
+          });
+          setMap(m);
+          setLoading(false);
+        })
+        .catch(() => {
+          // do nothing);
+        });
+    }
+  }, [map]);
+
+  // UseEffect for Google Markers OnTileLoaded
+  useEffect(() => {
+    if (loading || !useGoogleMarkersOnTileLoaded) return;
+
+    const tmp = [];
+    const featuresMarkers = data.features;
+    for (let i = 0; i < featuresMarkers.length; i++) {
+      const position = {
+        lat: Number(featuresMarkers[i]?.geometry?.coordinates?.[1]),
+        lng: Number(featuresMarkers[i]?.geometry?.coordinates?.[0]),
+      };
+      tmp.push(initGoogleMarker({ position }));
+    }
+    setGoogleMarkers(tmp);
+  }, [loading, useGoogleMarkersOnTileLoaded]);
+
+  const handleTileLoaded = useCallback(() => {
+    for (let i = 0; i < googleMarkers.length; i++) {
+      const marker: google.maps.Marker = googleMarkers[i];
+      if (map?.getBounds()?.contains(marker?.getPosition())) {
+        marker.setMap(map);
+      } else {
+        marker.setMap(null);
+      }
+    }
+  }, [googleMarkers, map]);
+
+  const setMapRef = (instance: HTMLDivElement | null) => {
+    mapDivRef.current = instance;
+  };
 
   return (
     <main className="flex flex-grow">
       <div className="flex min-h-screen w-full flex-grow items-center justify-center">
-        <Map
-          apiKey={process.env.NEXT_PUBLIC_GOOGLE_MAP_API_KEY || ''}
-          mapId={useVectorMap === 'true' ? process.env.NEXT_PUBLIC_GOOGLE_MAP_ID || '' : ''}
-          center={{
-            lat: -33.8688,
-            lng: 151.2093,
-          }}
-          tilt={45}
-          zoom={12}>
-          {useDeckGlIconLayer && <DeckMarker GeoJson={data} />}
-          {useGoogleMarkers &&
-            data.features?.map((feature: Feature, key: React.Key) => {
-              return (
-                <Marker
-                  position={{ lat: feature.geometry.coordinates[1], lng: feature.geometry.coordinates[0] }}
-                  key={key}
-                />
-              );
-            })}
-          {useDeckGlGeoJsonLayer && <GeoJsonLayer GeoJson={data} />}
-        </Map>
+        <MapContext.Provider value={map}>
+          <Map
+            mapId={useVectorMap === 'true' ? process.env.NEXT_PUBLIC_GOOGLE_MAP_ID || '' : ''}
+            center={{
+              lat: -33.8688,
+              lng: 151.2093,
+            }}
+            tilt={45}
+            zoom={12}
+            mapRef={setMapRef}
+            onTileLoaded={handleTileLoaded}>
+            {!loading && useDeckGlIconLayer && <DeckMarker GeoJson={data} />}
+            {!loading &&
+              useGoogleMarkers &&
+              data.features?.map((feature: Feature, key: React.Key) => {
+                return (
+                  <Marker
+                    position={{ lat: feature.geometry.coordinates[1], lng: feature.geometry.coordinates[0] }}
+                    key={key}
+                  />
+                );
+              })}
+            {!loading && useDeckGlGeoJsonLayer && <GeoJsonLayer GeoJson={data} />}
+          </Map>
+        </MapContext.Provider>
         <div className="absolute top-5 left-5 z-100">
           <Button link={'/'} text="HOME" />
         </div>

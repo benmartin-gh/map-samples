@@ -12,6 +12,14 @@ const data = [
     },
   },
   {
+    header: 'Google Markers - tileloaded',
+    description: 'Vector based map with Google Markers on tile loaded',
+    link: {
+      text: 'VIEW - 3D',
+      url: 'map?useVectorMap=true&useGoogleMarkersOnTileLoaded=true',
+    },
+  },
+  {
     header: 'Deck.gl - IconLayer',
     description: 'Raster based map using Deck.gl IconLayer',
     link: {
