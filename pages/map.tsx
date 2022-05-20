@@ -11,18 +11,43 @@ import { initGoogleMarker } from '../components/Marker/googleMarker';
 import MapContext from '../context/mapContext';
 import Marker from '../components/Marker';
 import { Feature } from '../types/GeoJSON';
+import WebGLOverlayView from '../components/WebGLOverlayView';
+import dataObjects3D from '../data/objects-3d.json';
 
 const MapPage: NextPage = () => {
   const router = useRouter();
   const [map, setMap] = useState<google.maps.Map | null>(null);
   const mapDivRef = useRef<HTMLDivElement>(null) as MutableRefObject<HTMLDivElement | null>;
 
-  const { useVectorMap, useDeckGlIconLayer, useDeckGlGeoJsonLayer, useGoogleMarkers, useGoogleMarkersOnTileLoaded } =
-    router.query;
+  const {
+    useVectorMap,
+    useDeckGlIconLayer,
+    useDeckGlGeoJsonLayer,
+    useGoogleMarkers,
+    useGoogleMarkersOnTileLoaded,
+    useGoogleWebGLOverlayView,
+  } = router.query;
   // useState for googleMarker onTileLoaded
   const [googleMarkers, setGoogleMarkers] = useState<google.maps.Marker[]>([]);
 
   const [loading, setLoading] = useState(true);
+  const mapOptions = useGoogleWebGLOverlayView
+    ? {
+        center: {
+          lat: -33.883552781,
+          lng: 151.193288896,
+        },
+        tilt: 45,
+        zoom: 15.8982,
+      }
+    : {
+        center: {
+          lat: -33.8688,
+          lng: 151.2093,
+        },
+        tilt: 45,
+        zoom: 12,
+      };
 
   useEffect(() => {
     if (mapDivRef.current && !map) {
@@ -35,6 +60,7 @@ const MapPage: NextPage = () => {
         .load()
         .then((google) => {
           const m = new google.maps.Map(mapDivRef.current, {
+            mapId: useVectorMap === 'true' ? process.env.NEXT_PUBLIC_GOOGLE_MAP_ID || '' : '',
             rotateControl: true,
             mapTypeControl: false,
             disableDefaultUI: true,
@@ -48,7 +74,7 @@ const MapPage: NextPage = () => {
           // do nothing);
         });
     }
-  }, [map]);
+  }, [map, useVectorMap]);
 
   // UseEffect for Google Markers OnTileLoaded
   useEffect(() => {
@@ -87,12 +113,7 @@ const MapPage: NextPage = () => {
         <MapContext.Provider value={map}>
           <Map
             mapId={useVectorMap === 'true' ? process.env.NEXT_PUBLIC_GOOGLE_MAP_ID || '' : ''}
-            center={{
-              lat: -33.8688,
-              lng: 151.2093,
-            }}
-            tilt={45}
-            zoom={12}
+            {...mapOptions}
             mapRef={setMapRef}
             onTileLoaded={handleTileLoaded}>
             {!loading && useDeckGlIconLayer && <DeckMarker GeoJson={data} />}
@@ -107,6 +128,7 @@ const MapPage: NextPage = () => {
                 );
               })}
             {!loading && useDeckGlGeoJsonLayer && <GeoJsonLayer GeoJson={data} />}
+            {!loading && useGoogleWebGLOverlayView && <WebGLOverlayView data={dataObjects3D} />}
           </Map>
         </MapContext.Provider>
         <div className="absolute top-5 left-5 z-100">

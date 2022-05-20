@@ -20,6 +20,14 @@ const data = [
     },
   },
   {
+    header: 'Google WebGL Overlay View',
+    description: 'Vector based map with 3D objects based on WebGLOverlayView & three',
+    link: {
+      text: 'VIEW - 3D',
+      url: 'map?useVectorMap=true&useGoogleWebGLOverlayView=true',
+    },
+  },
+  {
     header: 'Deck.gl - IconLayer',
     description: 'Raster based map using Deck.gl IconLayer',
     link: {

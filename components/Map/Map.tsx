@@ -24,6 +24,10 @@ const Map: React.FC<MapProps> = ({ mapRef, onTileLoaded, children, ...options })
       if (onTileLoaded) {
         mapEvents.push(map.addListener('tilesloaded', onTileLoaded));
       }
+
+      return () => {
+        mapEvents.forEach(google.maps.event.removeListener);
+      };
     }
   }, [map, onTileLoaded]);
 

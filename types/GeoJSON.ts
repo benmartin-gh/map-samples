@@ -15,5 +15,11 @@ interface Geometry {
 }
 
 interface Properties {
-  poilabel: string;
+  poilabel?: string;
+  gltf?: string;
+}
+
+export interface Coordinates {
+  lat: number;
+  lng: number;
 }
