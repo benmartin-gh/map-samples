@@ -6,13 +6,13 @@ import DeckMarker from '../components/Marker/DeckMarker';
 import GeoJsonLayer from '../components/GeoJsonLayer';
 import Button from '../components/Button';
 import { useRouter } from 'next/router';
-import data from '../data/sports_facilities.json';
 import { initGoogleMarker } from '../components/Marker/googleMarker';
 import MapContext from '../context/mapContext';
 import Marker from '../components/Marker';
 import { Feature } from '../types/GeoJSON';
 import WebGLOverlayView from '../components/WebGLOverlayView';
-import dataObjects3D from '../data/objects-3d.json';
+import data3D from '../data/objects-3d.json';
+import dataPOI from '../data/sports_facilities.json';
 
 const MapPage: NextPage = () => {
   const router = useRouter();
@@ -59,6 +59,7 @@ const MapPage: NextPage = () => {
       loader
         .load()
         .then((google) => {
+          if (!mapDivRef.current) return;
           const m = new google.maps.Map(mapDivRef.current, {
             mapId: useVectorMap === 'true' ? process.env.NEXT_PUBLIC_GOOGLE_MAP_ID || '' : '',
             rotateControl: true,
@@ -81,7 +82,7 @@ const MapPage: NextPage = () => {
     if (loading || !useGoogleMarkersOnTileLoaded) return;
 
     const tmp = [];
-    const featuresMarkers = data.features;
+    const featuresMarkers = dataPOI.features;
     for (let i = 0; i < featuresMarkers.length; i++) {
       const position = {
         lat: Number(featuresMarkers[i]?.geometry?.coordinates?.[1]),
@@ -95,7 +96,8 @@ const MapPage: NextPage = () => {
   const handleTileLoaded = useCallback(() => {
     for (let i = 0; i < googleMarkers.length; i++) {
       const marker: google.maps.Marker = googleMarkers[i];
-      if (map?.getBounds()?.contains(marker?.getPosition())) {
+      const position = { lat: marker.getPosition()?.lat() || 0, lng: marker.getPosition()?.lng() || 0 };
+      if (map?.getBounds()?.contains(position)) {
         marker.setMap(map);
       } else {
         marker.setMap(null);
@@ -116,10 +118,10 @@ const MapPage: NextPage = () => {
             {...mapOptions}
             mapRef={setMapRef}
             onTileLoaded={handleTileLoaded}>
-            {!loading && useDeckGlIconLayer && <DeckMarker GeoJson={data} />}
+            {!loading && useDeckGlIconLayer && <DeckMarker GeoJson={dataPOI} />}
             {!loading &&
               useGoogleMarkers &&
-              data.features?.map((feature: Feature, key: React.Key) => {
+              dataPOI.features?.map((feature: Feature, key: React.Key) => {
                 return (
                   <Marker
                     position={{ lat: feature.geometry.coordinates[1], lng: feature.geometry.coordinates[0] }}
@@ -127,8 +129,8 @@ const MapPage: NextPage = () => {
                   />
                 );
               })}
-            {!loading && useDeckGlGeoJsonLayer && <GeoJsonLayer GeoJson={data} />}
-            {!loading && useGoogleWebGLOverlayView && <WebGLOverlayView data={dataObjects3D} />}
+            {!loading && useDeckGlGeoJsonLayer && <GeoJsonLayer GeoJson={dataPOI} />}
+            {!loading && useGoogleWebGLOverlayView && <WebGLOverlayView data={data3D} />}
           </Map>
         </MapContext.Provider>
         <div className="absolute top-5 left-5 z-100">
