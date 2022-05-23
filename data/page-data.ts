@@ -16,10 +16,20 @@ interface PageData {
 const data: PageData[] = [
   {
     header: 'Google Markers',
-    description: 'Vector based map with Google Markers',
+    description: 'Raster based map with Google Markers',
     params: {
       useGoogleMarkers: true,
       mapType: '2D',
+      library: 'Google Javascript API',
+      component: 'Marker',
+    },
+  },
+  {
+    header: 'Google Markers',
+    description: 'Vector based map with Google Markers',
+    params: {
+      useGoogleMarkers: true,
+      mapType: '3D',
       library: 'Google Javascript API',
       component: 'Marker',
     },
@@ -42,16 +52,6 @@ const data: PageData[] = [
       mapType: '3D',
       library: 'Google Javascript API',
       component: 'Google Web GL Overlay View',
-    },
-  },
-  {
-    header: 'Google Markers',
-    description: 'Raster based map with Google Markers',
-    params: {
-      useGoogleMarkers: true,
-      mapType: '3D',
-      library: 'Google Javascript API',
-      component: 'Marker',
     },
   },
   {

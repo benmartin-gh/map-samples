@@ -4,21 +4,21 @@ import { useGoogleMap } from '../../context/mapContext';
 import { GeoJsonLayer } from '@deck.gl/layers';
 
 interface GeoJsonLayerProps {
-  GeoJson: GeoJson;
+  geoJson: GeoJson;
 }
 
 const ICON_MAPPING = {
   marker: { x: 0, y: 0, width: 128, height: 128, mask: true },
 };
 
-const DeckMarker = ({ GeoJson }: GeoJsonLayerProps) => {
+const DeckMarker = ({ geoJson }: GeoJsonLayerProps) => {
   const map = useGoogleMap();
 
   const deckOverlay = new DeckOverlay({
     layers: [
       new GeoJsonLayer({
         id: 'geojson-layer',
-        data: GeoJson.features,
+        data: geoJson.features,
         pointType: 'icon',
         getIconSize: 20,
         iconAtlas: '/icon-atlas.png',

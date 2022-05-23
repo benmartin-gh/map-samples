@@ -2,6 +2,7 @@ import { IconLayer } from '@deck.gl/layers';
 import { GoogleMapsOverlay as DeckOverlay } from '@deck.gl/google-maps';
 import { Feature, GeoJson } from '../../types/GeoJSON';
 import { useGoogleMap } from '../../context/mapContext';
+import { Position } from 'deck.gl';
 
 interface DeckMarkerProps {
   GeoJson: GeoJson;
@@ -26,7 +27,7 @@ const DeckMarker = ({ GeoJson }: DeckMarkerProps) => {
         iconMapping: ICON_MAPPING,
         getIcon: () => 'marker',
         sizeScale: 1,
-        getPosition: (d) => d.geometry.coordinates,
+        getPosition: (d) => d.geometry.coordinates as Position,
         getSize: () => 20,
         onClick: (event) => alert(event.object.properties.poilabel),
       }),

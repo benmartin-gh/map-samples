@@ -3,13 +3,13 @@
   "features": [
     {
       "type": "Feature",
-      "properties": { "type": "object", "gltf": "/LittlestTokyo.glb", "id": "1" },
-      "geometry": { "type": "Point", "coordinates": [151.19168009701763, -33.883549543059815] }
+      "properties": { "gltf": "http://localhost:3000/Xbot.glb" },
+      "geometry": { "type": "Point", "coordinates": [151.09168009701743, -33.883549543059815] }
     },
     {
       "type": "Feature",
-      "properties": { "type": "object", "gltf": "/Soldier.glb", "id": "2" },
-      "geometry": { "type": "Point", "coordinates": [151.19168009701762, -33.883549543059814] }
+      "properties": { "type": "object", "gltf": "http://localhost:3000/Soldier.glb" },
+      "geometry": { "type": "Point", "coordinates": [151.19148009701762, -33.883549543059014] }
     }
   ]
 }

@@ -6,18 +6,18 @@ import DeckMarker from '../components/Marker/DeckMarker';
 import GeoJsonLayer from '../components/GeoJsonLayer';
 import Button from '../components/Button';
 import { useRouter } from 'next/router';
-import data from '../data/sports_facilities.json';
 import { initGoogleMarker } from '../components/Marker/googleMarker';
 import MapContext from '../context/mapContext';
 import Marker from '../components/Marker';
 import { Feature } from '../types/GeoJSON';
 import WebGLOverlayView from '../components/WebGLOverlayView';
-import dataObjects3D from '../data/objects-3d.json';
+import data3D from '../data/objects-3d.json';
+import dataPOI from '../data/sports_facilities.json';
 
 const MapPage: NextPage = () => {
   const router = useRouter();
   const [map, setMap] = useState<google.maps.Map | null>(null);
-  const mapDivRef = useRef<HTMLDivElement>(null) as MutableRefObject<HTMLDivElement>;
+  const mapDivRef = useRef<HTMLDivElement>(null) as MutableRefObject<HTMLDivElement | null>;
 
   const {
     mapType,
@@ -59,26 +59,22 @@ const MapPage: NextPage = () => {
         version: 'beta',
       });
 
-      loader
-        .load()
-        .then((google) => {
-          const m = new google.maps.Map(mapDivRef.current, {
-            mapId:
-              mapType === '3D'
-                ? process.env.NEXT_PUBLIC_GOOGLE_VECTOR_MAP_ID || ''
-                : process.env.NEXT_PUBLIC_GOOGLE_MAP_ID || '',
-            rotateControl: true,
-            mapTypeControl: false,
-            disableDefaultUI: true,
-            scaleControl: true,
-            zoomControl: true,
-          });
-          setMap(m);
-          setLoading(false);
-        })
-        .catch(() => {
-          // do nothing);
+      loader.load().then((google) => {
+        if (!mapDivRef.current) return;
+        const m = new google.maps.Map(mapDivRef.current, {
+          mapId:
+            mapType === '3D'
+              ? process.env.NEXT_PUBLIC_GOOGLE_VECTOR_MAP_ID || ''
+              : process.env.NEXT_PUBLIC_GOOGLE_MAP_ID || '',
+          rotateControl: true,
+          mapTypeControl: false,
+          disableDefaultUI: true,
+          scaleControl: true,
+          zoomControl: true,
         });
+        setMap(m);
+        setLoading(false);
+      });
     }
   }, [map, mapType]);
 
@@ -87,7 +83,7 @@ const MapPage: NextPage = () => {
     if (loading || !useGoogleMarkersOnTileLoaded) return;
 
     const tmp = [];
-    const featuresMarkers = data.features;
+    const featuresMarkers = dataPOI.features;
     for (let i = 0; i < featuresMarkers.length; i++) {
       const position = {
         lat: Number(featuresMarkers[i]?.geometry?.coordinates?.[1]),
@@ -101,7 +97,8 @@ const MapPage: NextPage = () => {
   const handleTileLoaded = useCallback(() => {
     for (let i = 0; i < googleMarkers.length; i++) {
       const marker: google.maps.Marker = googleMarkers[i];
-      if (map?.getBounds()?.contains(marker?.getPosition())) {
+      const position = { lat: marker.getPosition()?.lat() || 0, lng: marker.getPosition()?.lng() || 0 };
+      if (map?.getBounds()?.contains(position)) {
         marker.setMap(map);
       } else {
         marker.setMap(null);
@@ -109,7 +106,7 @@ const MapPage: NextPage = () => {
     }
   }, [googleMarkers, map]);
 
-  const setMapRef = (instance: HTMLDivElement) => {
+  const setMapRef = (instance: HTMLDivElement | null) => {
     mapDivRef.current = instance;
   };
 
@@ -117,11 +114,15 @@ const MapPage: NextPage = () => {
     <main className="flex flex-grow">
       <div className="flex min-h-screen w-full flex-grow items-center justify-center">
         <MapContext.Provider value={map}>
-          <Map {...mapOptions} mapRef={setMapRef} onTileLoaded={handleTileLoaded}>
-            {!loading && useDeckGlIconLayer && <DeckMarker GeoJson={data} />}
+          <Map
+            mapId={mapType === '3D' ? process.env.NEXT_PUBLIC_GOOGLE_MAP_ID || '' : ''}
+            {...mapOptions}
+            mapRef={setMapRef}
+            onTileLoaded={handleTileLoaded}>
+            {!loading && useDeckGlIconLayer && <DeckMarker GeoJson={dataPOI} />}
             {!loading &&
               useGoogleMarkers &&
-              data.features?.map((feature: Feature, key: React.Key) => {
+              dataPOI.features?.map((feature: Feature, key: React.Key) => {
                 return (
                   <Marker
                     position={{ lat: feature.geometry.coordinates[1], lng: feature.geometry.coordinates[0] }}
@@ -129,8 +130,8 @@ const MapPage: NextPage = () => {
                   />
                 );
               })}
-            {!loading && useDeckGlGeoJsonLayer && <GeoJsonLayer GeoJson={data} />}
-            {!loading && useGoogleWebGLOverlayView && <WebGLOverlayView GeoJson={dataObjects3D} />}
+            {!loading && useDeckGlGeoJsonLayer && <GeoJsonLayer geoJson={dataPOI} />}
+            {!loading && useGoogleWebGLOverlayView && <WebGLOverlayView geoJson={data3D} />}
           </Map>
         </MapContext.Provider>
         <div className="absolute top-5 left-5 z-100 drop-shadow-md">

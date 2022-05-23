@@ -4,46 +4,41 @@ import { forEach } from 'lodash';
 import useGoogleWebGLOverlay from './hooks/useGoogleWebGLOverlay';
 import { initWebGLOverlayView } from './googleWebGLOverlayView';
 
+export type FeatureDictionary = { [key: string]: Feature };
+
 interface WebGLOverlayViewProps {
-  GeoJson: GeoJson;
+  geoJson: GeoJson;
 }
 
-const WebGLOverlayView = ({ GeoJson }: WebGLOverlayViewProps) => {
+const WebGLOverlayView = ({ geoJson }: WebGLOverlayViewProps) => {
   const { map, camera, loader, scene, webGLViews } = useGoogleWebGLOverlay();
 
   useEffect(() => {
     return () => {
-      Object.values(webGLViews).map((view: google.maps.WebGLOverlayView) => view.setMap(null));
+      Object.values(webGLViews).map((view) => view.setMap(null));
       Object.keys(webGLViews).map((key) => delete webGLViews[key]);
     };
   });
 
-  if (!map) return;
+  const notRenderedGltf: FeatureDictionary = {};
+  const features: Feature[] = geoJson?.features.filter((feature) => feature?.properties?.gltf);
 
-  let notRenderedGltf = {};
-  const features: Feature[] = GeoJson?.features.filter((feature) => feature?.properties?.gltf);
-
-  for (let i = 0; i < features.length; i++) {
-    const gltf = features[i].properties.gltf;
-    if (webGLViews[gltf] === undefined) {
+  for (let i = 0; i < features?.length; i++) {
+    const gltf: string | undefined = features[i].properties.gltf;
+    if (gltf && webGLViews[gltf] === undefined) {
       notRenderedGltf[gltf] = features[i];
     }
   }
 
-  console.log('not Rendered buildings ', notRenderedGltf);
-
-  if (!Object.values(notRenderedGltf).length) return;
-
-  const center = {
-    lat: features[0].geometry.coordinates[1],
-    lng: features[0].geometry.coordinates[0],
-  } as Coordinates;
-
   forEach(notRenderedGltf, (feature: Feature, sourceGltf: string) => {
+    const position = {
+      lat: feature.geometry.coordinates[1],
+      lng: feature.geometry.coordinates[0],
+    } as Coordinates;
+
     const newWebGLView: google.maps.WebGLOverlayView = initWebGLOverlayView({
-      center,
+      position,
       sourceGltf,
-      feature,
       loader,
       scene,
       camera,
@@ -53,7 +48,7 @@ const WebGLOverlayView = ({ GeoJson }: WebGLOverlayViewProps) => {
     console.log('render... ', sourceGltf, newWebGLView);
   });
 
-  return null;
+  return <></>;
 };
 
 export default WebGLOverlayView;
