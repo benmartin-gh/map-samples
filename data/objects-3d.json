@@ -3,12 +3,12 @@
   "features": [
     {
       "type": "Feature",
-      "properties": { "gltf": "http://localhost:3000/Xbot.glb" },
+      "properties": { "gltf": "/Xbot.glb" },
       "geometry": { "type": "Point", "coordinates": [151.09168009701743, -33.883549543059815] }
     },
     {
       "type": "Feature",
-      "properties": { "type": "object", "gltf": "http://localhost:3000/Soldier.glb" },
+      "properties": { "type": "object", "gltf": "/Soldier.glb" },
       "geometry": { "type": "Point", "coordinates": [151.19148009701762, -33.883549543059014] }
     }
   ]
