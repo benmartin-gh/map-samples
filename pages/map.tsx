@@ -20,13 +20,16 @@ const MapPage: NextPage = () => {
   const mapDivRef = useRef<HTMLDivElement>(null) as MutableRefObject<HTMLDivElement | null>;
 
   const {
-    useVectorMap,
+    mapType,
+    library,
+    component,
+    useGoogleMarkers,
     useDeckGlIconLayer,
     useDeckGlGeoJsonLayer,
-    useGoogleMarkers,
     useGoogleMarkersOnTileLoaded,
     useGoogleWebGLOverlayView,
   } = router.query;
+
   // useState for googleMarker onTileLoaded
   const [googleMarkers, setGoogleMarkers] = useState<google.maps.Marker[]>([]);
 
@@ -56,26 +59,24 @@ const MapPage: NextPage = () => {
         version: 'beta',
       });
 
-      loader
-        .load()
-        .then((google) => {
-          if (!mapDivRef.current) return;
-          const m = new google.maps.Map(mapDivRef.current, {
-            mapId: useVectorMap === 'true' ? process.env.NEXT_PUBLIC_GOOGLE_MAP_ID || '' : '',
-            rotateControl: true,
-            mapTypeControl: false,
-            disableDefaultUI: true,
-            scaleControl: true,
-            zoomControl: true,
-          });
-          setMap(m);
-          setLoading(false);
-        })
-        .catch(() => {
-          // do nothing);
+      loader.load().then((google) => {
+        if (!mapDivRef.current) return;
+        const m = new google.maps.Map(mapDivRef.current, {
+          mapId:
+            mapType === '3D'
+              ? process.env.NEXT_PUBLIC_GOOGLE_VECTOR_MAP_ID || ''
+              : process.env.NEXT_PUBLIC_GOOGLE_MAP_ID || '',
+          rotateControl: true,
+          mapTypeControl: false,
+          disableDefaultUI: true,
+          scaleControl: true,
+          zoomControl: true,
         });
+        setMap(m);
+        setLoading(false);
+      });
     }
-  }, [map, useVectorMap]);
+  }, [map, mapType]);
 
   // UseEffect for Google Markers OnTileLoaded
   useEffect(() => {
@@ -113,11 +114,7 @@ const MapPage: NextPage = () => {
     <main className="flex flex-grow">
       <div className="flex min-h-screen w-full flex-grow items-center justify-center">
         <MapContext.Provider value={map}>
-          <Map
-            mapId={useVectorMap === 'true' ? process.env.NEXT_PUBLIC_GOOGLE_MAP_ID || '' : ''}
-            {...mapOptions}
-            mapRef={setMapRef}
-            onTileLoaded={handleTileLoaded}>
+          <Map {...mapOptions} mapRef={setMapRef} onTileLoaded={handleTileLoaded}>
             {!loading && useDeckGlIconLayer && <DeckMarker GeoJson={dataPOI} />}
             {!loading &&
               useGoogleMarkers &&
@@ -129,12 +126,22 @@ const MapPage: NextPage = () => {
                   />
                 );
               })}
-            {!loading && useDeckGlGeoJsonLayer && <GeoJsonLayer GeoJson={dataPOI} />}
-            {!loading && useGoogleWebGLOverlayView && <WebGLOverlayView data={data3D} />}
+            {!loading && useDeckGlGeoJsonLayer && <GeoJsonLayer geoJson={dataPOI} />}
+            {!loading && useGoogleWebGLOverlayView && <WebGLOverlayView geoJson={data3D} />}
           </Map>
         </MapContext.Provider>
-        <div className="absolute top-5 left-5 z-100">
+        <div className="absolute top-5 left-5 z-100 drop-shadow-md">
           <Button link={'/'} text="HOME" />
+        </div>
+        <div className="absolute bottom-5 left-5 z-100 rounded bg-gray-100 drop-shadow-md">
+          <div className="grid gap-2 grid-cols-2 p-2 text-sm">
+            <div className="font-bold">Map Type:</div>
+            <div>{mapType === '3D' ? '3D Vector' : '2D Raster'}</div>
+            <div className="font-bold">Library:</div>
+            <div>{library}</div>
+            <div className="font-bold">Component:</div>
+            <div>{component}</div>
+          </div>
         </div>
       </div>
     </main>

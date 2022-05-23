@@ -1,16 +1,22 @@
 import Link from 'next/link';
 
+type ButtonType = 'red' | 'blue';
+
 interface ButtonProps {
   link: string;
   text: string;
+  type?: ButtonType;
+  data?: any;
 }
 
-const Button = (props: ButtonProps) => {
+const Button = ({ type = 'blue', link, text, data = '' }: ButtonProps) => {
   return (
-    <Link href={props.link}>
-      <button className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 border border-blue-700 rounded">
-        {props.text}
-      </button>
+    <Link
+      href={{
+        pathname: link,
+        query: data,
+      }}>
+      <button className={`button-style-${type}`}>{text}</button>
     </Link>
   );
 };

@@ -1,6 +1,5 @@
 import { PerspectiveCamera, DirectionalLight, Scene, AmbientLight, WebGLRenderer, Matrix4 } from 'three';
 import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader';
-
 import { Coordinates } from '../../types/GeoJSON';
 
 interface GoogleWebGLOverlayViewProps {

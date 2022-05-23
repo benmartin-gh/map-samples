@@ -7,10 +7,10 @@ import { initWebGLOverlayView } from './googleWebGLOverlayView';
 export type FeatureDictionary = { [key: string]: Feature };
 
 interface WebGLOverlayViewProps {
-  data: GeoJson;
+  geoJson: GeoJson;
 }
 
-const WebGLOverlayView = ({ data }: WebGLOverlayViewProps) => {
+const WebGLOverlayView = ({ geoJson }: WebGLOverlayViewProps) => {
   const { map, camera, loader, scene, webGLViews } = useGoogleWebGLOverlay();
 
   useEffect(() => {
@@ -21,18 +21,14 @@ const WebGLOverlayView = ({ data }: WebGLOverlayViewProps) => {
   });
 
   const notRenderedGltf: FeatureDictionary = {};
-  const features: Feature[] = data?.features.filter((feature) => feature?.properties?.gltf);
+  const features: Feature[] = geoJson?.features.filter((feature) => feature?.properties?.gltf);
 
-  for (let i = 0; i < features.length; i++) {
+  for (let i = 0; i < features?.length; i++) {
     const gltf: string | undefined = features[i].properties.gltf;
     if (gltf && webGLViews[gltf] === undefined) {
       notRenderedGltf[gltf] = features[i];
     }
   }
-
-  console.log('not Rendered buildings ', notRenderedGltf);
-
-  //if (!Object.values(notRenderedGltf).length) return;
 
   forEach(notRenderedGltf, (feature: Feature, sourceGltf: string) => {
     const position = {
