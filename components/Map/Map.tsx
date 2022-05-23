@@ -18,7 +18,7 @@ const Map: React.FC<MapProps> = ({ mapRef, onTileLoaded, children, ...options })
 
   useEffect(() => {
     if (map) {
-      const mapEvents = [];
+      const mapEvents: google.maps.MapsEventListener[] = [];
       ['tilesloaded'].forEach((eventName) => google.maps.event.clearListeners(map, eventName));
 
       if (onTileLoaded) {

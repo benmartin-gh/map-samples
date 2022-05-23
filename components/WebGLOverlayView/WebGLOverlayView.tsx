@@ -5,10 +5,10 @@ import useGoogleWebGLOverlay from './hooks/useGoogleWebGLOverlay';
 import { initWebGLOverlayView } from './googleWebGLOverlayView';
 
 interface WebGLOverlayViewProps {
-  data: GeoJson;
+  GeoJson: GeoJson;
 }
 
-const WebGLOverlayView = ({ data }: WebGLOverlayViewProps) => {
+const WebGLOverlayView = ({ GeoJson }: WebGLOverlayViewProps) => {
   const { map, camera, loader, scene, webGLViews } = useGoogleWebGLOverlay();
 
   useEffect(() => {
@@ -21,7 +21,7 @@ const WebGLOverlayView = ({ data }: WebGLOverlayViewProps) => {
   if (!map) return;
 
   let notRenderedGltf = {};
-  const features: Feature[] = data?.features.filter((feature) => feature?.properties?.gltf);
+  const features: Feature[] = GeoJson?.features.filter((feature) => feature?.properties?.gltf);
 
   for (let i = 0; i < features.length; i++) {
     const gltf = features[i].properties.gltf;

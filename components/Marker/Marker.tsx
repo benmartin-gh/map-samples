@@ -11,6 +11,7 @@ const Marker = ({ ...options }) => {
       marker.setOptions({
         ...options,
         map: map,
+        optimized: true,
       });
     }
   }, [map, marker, options]);

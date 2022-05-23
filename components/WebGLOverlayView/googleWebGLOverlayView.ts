@@ -3,7 +3,6 @@ import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader.js';
 
 import { Feature, Coordinates } from '../../types/GeoJSON';
 import mapboxgl from 'mapbox-gl';
-import { getMatrix } from './utils';
 
 interface GoogleWebGLOverlayViewProps {
   sourceGltf: string;
@@ -24,7 +23,7 @@ export function initWebGLOverlayView({
   camera,
 }: GoogleWebGLOverlayViewProps): google.maps.WebGLOverlayView {
   const webGLOverlayView = new google.maps.WebGLOverlayView();
-  let renderer;
+  let renderer: WebGLRenderer;
 
   webGLOverlayView.onAdd = () => {
     const ambientLight = new AmbientLight(0xffffff, 0.75); // soft white light
@@ -39,16 +38,8 @@ export function initWebGLOverlayView({
 
     loader.load(sourceGltf, (gltf) => {
       const sc = gltf.scene.clone();
-      sc.applyMatrix4(getMatrix(feature, origin));
       scene.add(sc);
     });
-
-    // const source = 'pin.gltf';
-    // loader.load(sourceGltf, (gltf) => {
-    //   gltf.scene.scale.set(25, 25, 25);
-    //   gltf.scene.rotation.x = (180 * Math.PI) / 180;
-    //   scene.add(gltf.scene);
-    // });
   };
 
   webGLOverlayView.onContextRestored = ({ gl }) => {
