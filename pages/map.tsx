@@ -114,11 +114,7 @@ const MapPage: NextPage = () => {
     <main className="flex flex-grow">
       <div className="flex min-h-screen w-full flex-grow items-center justify-center">
         <MapContext.Provider value={map}>
-          <Map
-            mapId={mapType === '3D' ? process.env.NEXT_PUBLIC_GOOGLE_MAP_ID || '' : ''}
-            {...mapOptions}
-            mapRef={setMapRef}
-            onTileLoaded={handleTileLoaded}>
+          <Map {...mapOptions} mapRef={setMapRef} onTileLoaded={handleTileLoaded}>
             {!loading && useDeckGlIconLayer && <DeckMarker GeoJson={dataPOI} />}
             {!loading &&
               useGoogleMarkers &&
