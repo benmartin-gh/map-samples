@@ -1,17 +1,4 @@
-interface PageData {
-  header: string;
-  description: string;
-  params: {
-    mapType: '2D' | '3D';
-    library: string;
-    component: string;
-    useGoogleMarkers?: boolean;
-    useDeckGlIconLayer?: boolean;
-    useDeckGlGeoJsonLayer?: boolean;
-    useGoogleMarkersOnTileLoaded?: boolean;
-    useGoogleWebGLOverlayView?: boolean;
-  };
-}
+import { PageData } from '../types/PageData';
 
 const data: PageData[] = [
   {
@@ -92,6 +79,16 @@ const data: PageData[] = [
       mapType: '3D',
       library: 'Deck.gl',
       component: 'GeoJsonLayer',
+    },
+  },
+  {
+    header: 'Mapbox Markers',
+    description: 'Example map using Mapbox markers',
+    mapProvider: 'mapbox',
+    params: {
+      mapType: '3D',
+      library: 'Mapbox',
+      component: 'Marker',
     },
   },
 ];

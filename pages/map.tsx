@@ -133,7 +133,7 @@ const MapPage: NextPage = () => {
         <div className="absolute top-5 left-5 z-100 drop-shadow-md">
           <Button link={'/'} text="HOME" />
         </div>
-        <div className="absolute bottom-5 left-5 z-100 rounded bg-gray-100 drop-shadow-md">
+        <div className="absolute bottom-5 left-5 z-100 rounded bg-white drop-shadow-md">
           <div className="grid gap-2 grid-cols-2 p-2 text-sm">
             <div className="font-bold">Map Type:</div>
             <div>{mapType === '3D' ? '3D Vector' : '2D Raster'}</div>
